@@ -11,105 +11,9 @@ import { Markdown } from '@tiptap/markdown';
 import { Placeholder } from "@tiptap/extension-placeholder";
 import Underline from '@tiptap/extension-underline'
 import FontFamily from '@tiptap/extension-font-family'
+import TextAlign from '@tiptap/extension-text-align'
 import MarkdownIt from 'markdown-it';
-import { Plugin, PluginKey } from "prosemirror-state"
-const trackKey = new PluginKey('track')
-import { Mapping } from "prosemirror-transform"
-class Span {
-  constructor(from, to, commit) {
-    this.from = from;
-    this.to = to;
-    this.commit = commit;
-  }
-}
-
-class Commit {
-  constructor(message, time, steps, maps) {
-    this.message = message;
-    this.time = time;
-    this.steps = steps;
-    this.maps = maps;
-  }
-}
-
-class TrackState {
-  constructor(blameMap, commits, uncommittedSteps, uncommittedMaps) {
-    this.blameMap = blameMap;
-    this.commits = commits;
-    this.uncommittedSteps = uncommittedSteps;
-    this.uncommittedMaps = uncommittedMaps;
-  }
-  applyTransform(transform) {
-    let inverted = transform.steps.map((step, i) => step.invert(transform.docs[i]));
-    let newBlame = updateBlameMap(this.blameMap, transform, this.commits.length);
-    return new TrackState(newBlame, this.commits, this.uncommittedSteps.concat(inverted), this.uncommittedMaps.concat(transform.mapping.maps))
-  }
-  applyCommit(message, time) {
-    if (this.uncommittedSteps.length == 0) return this
-    let commit = new Commit(message, time, this.uncommittedSteps, this.uncommittedMaps)
-    return new TrackState(this.blameMap, this.commits.concat([commit]), [], [])
-  }
-}
-
-function updateBlameMap(map, transform, id) {
-  let result = [], mapping = transform.mapping
-  for (let i = 0; i < map.length; i++) {
-    let span = map[i]
-    let from = mapping.map(span.from, 1), to = mapping.map(span.to, -1)
-    if (from < to) result.push(new Span(from, to, span.commit))
-  }
-
-  for (let i = 0; i < transform.steps.length; i++) {
-    let map = transform.mapping.maps[i]
-    map.forEach((_from, _to, start, end) => {
-      let from = transform.mapping.slice(i + 1).map(start, 1)
-      let to = transform.mapping.slice(i + 1).map(end, -1)
-      if (from < to) result.push(new Span(from, to, id))
-    })
-  }
-
-  return result.sort((a, b) => a.from - b.from)
-}
-const trackPlugin = new Plugin({
-  key: trackKey,
-  state: {
-    init(_, instance) {
-      return new TrackState([new Span(0, instance.doc.content.size, null)], [], [], []);
-    },
-    apply(tr, tracked) {
-      if (tr.docChanged) tracked = tracked.applyTransform(tr);
-      let commitMessage = tr.getMeta(trackKey);
-      if (commitMessage) tracked = tracked.applyCommit(commitMessage, new Date());
-      return tracked;
-    }
-  }
-});
-
-const TrackExtension = Extension.create({
-  name: 'track',
-  addProseMirrorPlugins() {
-    return [trackPlugin]
-  }
-})
-function revertCommit(commit, editor) {
-  let trackState = trackKey.getState(editor.state)
-  let index = trackState.commits.indexOf(commit)
-  if (index == -1) return
-  if (trackState.uncommittedSteps.length)
-    return alert("Commit your changes first");
-
-  let remap = new Mapping(trackState.commits.slice(index).reduce((maps, c) => maps.concat(c.maps), []))
-  let tr = editor.state.tr
-  for (let i = commit.steps.length - 1; i >= 0; i--) {
-    let remapped = commit.steps[i].map(remap.slice(i + 1))
-    if (!remapped) continue
-    let result = tr.maybeStep(remapped)
-    if (result.doc) remap.appendMap(remapped.getMap(), i)
-  }
-  if (tr.docChanged) {
-    editor.view.dispatch(tr.setMeta(trackPlugin, `Revert '${commit.message}'`))
-  }
-}
+let snapshots = [];
 const CustomHeading = Heading.extend({
   addAttributes() {
     return {
@@ -289,7 +193,9 @@ if (editorElement) {
       }),
       Underline,
       FontFamily,
-      TrackExtension
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
     ],
     editorProps: {
       handlePaste(event) {
@@ -312,8 +218,11 @@ if (editorElement) {
   const commitMsgInput = document.querySelector('#commit_message_input');
 
   function takeSnapshot(message) {
-    const state = editor.state;
-    editor.view.dispatch(state.tr.setMeta(trackKey, message));
+    snapshots.push({
+      message,
+      time: new Date(),
+      content: editor.getHTML()
+    });
     console.log(`Snapshot taken: "${message}"`);
     renderCommitHistory();
   }
@@ -324,57 +233,53 @@ if (editorElement) {
     if (commitMsgInput) commitMsgInput.value = '';
   });
 
-  // Revert button logic: Global revert (last commit)
   const revertBtn = document.querySelector('#revert_btn');
   revertBtn?.addEventListener('click', () => {
-    const trackState = trackKey.getState(editor.state);
-    const lastCommit = trackState?.commits[trackState.commits.length - 1];
-    if (!lastCommit) return alert('No snapshots to revert');
-    revertCommit(lastCommit, editor);
+    const lastSnapshot = snapshots[snapshots.length - 1];
+    if (!lastSnapshot) return alert('No snapshots to revert');
+    editor.commands.setContent(lastSnapshot.content);
     renderCommitHistory();
   });
 
   // Revert button logic is now also handled per commit in renderCommitHistory
   function renderCommitHistory() {
     if (!editor || !editor.state) return;
-    const trackState = trackKey.getState(editor.state);
     const historyContainer = document.querySelector('#history_container');
     if (!historyContainer) return;
     historyContainer.innerHTML = '';
 
-    if (!trackState) {
-      console.warn('TrackState not found in editor state');
+    console.log('Rendering history. Snapshots:', snapshots.length);
+
+    if (snapshots.length === 0) {
+      historyContainer.innerHTML = '<div style="color: #64748b; font-size: 0.85rem; padding: 12px 0; text-align: center;">No snapshots yet.</div>';
       return;
     }
 
-    console.log('Rendering history. Commits:', trackState.commits.length);
-
-    if (trackState.commits.length === 0) {
-      historyContainer.innerHTML = '<div style="color: #666; font-size: 0.9em; padding: 5px 0;">No snapshots yet.</div>';
-      return;
-    }
-
-    // Show commits in reverse order (newest first)
-    [...trackState.commits].reverse().forEach((commit) => {
+    [...snapshots].reverse().forEach((snapshot, index) => {
       const commitElement = document.createElement('div');
-      commitElement.style.borderBottom = "1px solid #eee";
-      commitElement.style.padding = "10px 0";
-      commitElement.style.display = "flex";
-      commitElement.style.justifyContent = "space-between";
-      commitElement.style.alignItems = "center";
+      commitElement.className = 'snapshot-item';
+      commitElement.style.display = 'flex';
+      commitElement.style.justifyContent = 'space-between';
+      commitElement.style.alignItems = 'center';
 
-      const infoSpan = document.createElement('span');
-      infoSpan.innerHTML = `<small style="color: #666;">${commit.time.toLocaleTimeString()}</small> <strong style="margin-left: 10px;">${commit.message}</strong>`;
+      const infoSpan = document.createElement('div');
+      infoSpan.style.overflow = 'hidden';
+      infoSpan.innerHTML = `
+        <div class="snapshot-name">${snapshot.message}</div>
+        <div class="snapshot-time">${snapshot.time.toLocaleTimeString()}</div>
+      `;
 
       const revertBtn = document.createElement('button');
-      revertBtn.textContent = 'Revert';
       revertBtn.type = 'button';
-      revertBtn.style.padding = '4px 12px';
-      revertBtn.style.cursor = 'pointer';
+      revertBtn.className = 'sidebar-action-btn';
+      revertBtn.style.padding = '4px 8px';
+      revertBtn.style.fontSize = '12px';
+      revertBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>';
+      revertBtn.title = 'Restore this version';
       revertBtn.addEventListener('click', () => {
-        console.log('Reverting to:', commit.message);
-        revertCommit(commit, editor);
-        renderCommitHistory();
+        if (confirm(`Restore version: "${snapshot.message}"?`)) {
+          editor.commands.setContent(snapshot.content);
+        }
       });
 
       commitElement.appendChild(infoSpan);
@@ -396,6 +301,7 @@ if (editorElement) {
   const linkBtn = document.querySelector('#link_btn');
   const imageBtn = document.querySelector('#image_btn');
   const imageInput = document.querySelector('#image_upload')
+  const alignBtn = document.querySelector('#align_btn');
 
   importBtn?.addEventListener('click', () => {
     mdFileInput?.click()
@@ -477,6 +383,16 @@ if (editorElement) {
   orderedBtn?.addEventListener('click', () => {
     editor.chain().focus().toggleOrderedList().run()
   })
+  alignBtn?.addEventListener('click', () => {
+    const isLeft = editor.isActive({ textAlign: 'left' })
+    const isCenter = editor.isActive({ textAlign: 'center' })
+    const isRight = editor.isActive({ textAlign: 'right' })
+
+    if (isRight) editor.chain().focus().setTextAlign('center').run()
+    else if (isCenter) editor.chain().focus().setTextAlign('right').run()
+    else editor.chain().focus().setTextAlign('left').run()
+  })
+
   headingSelect?.addEventListener('change', (e) => {
     const value = e.target.value
     if (value === '') {
@@ -539,6 +455,10 @@ if (editorElement) {
   bindToolbarButton(orderedBtn, {
     isActive: () => editor.isActive('orderedList'),
     canRun: () => editor.can().chain().focus().toggleOrderedList().run(),
+  })
+  bindToolbarButton(alignBtn, {
+    isActive: () => editor.isActive({ textAlign: 'center' }) || editor.isActive({ textAlign: 'right' }),
+    canRun: () => editor.can().chain().focus().setTextAlign('center').run(),
   })
   bindToolbarButton(linkBtn, {
     isActive: () => editor.isActive('link'),

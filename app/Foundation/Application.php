@@ -39,6 +39,9 @@ class Application
         $this->router->get('/register','AuthController@showRegister');
         $this->router->post('/register','AuthController@Register');
 
+        $this->router->get('/verify-otp', 'VerificationController@showVerifyForm');
+        $this->router->post('/verify-otp', 'VerificationController@verify');
+
         $this->router->get('/logout','AuthController@Logout',['auth']);
         $this->router->get('/', 'PageController@home');
         $this->router->get('/test','PageController@testRedirect');

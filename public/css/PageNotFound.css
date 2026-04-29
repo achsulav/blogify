@@ -1,7 +1,7 @@
-h1 {
-  color: red;
+.error-page h1 {
+  color: #0f172a;
 }
 
-h2 {
-  color: black;
+.error-page h2 {
+  color: #64748b;
 }

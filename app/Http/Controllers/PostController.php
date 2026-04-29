@@ -192,7 +192,7 @@ $this->redirect('/dashboard');
       'status' => 'success',
       'url' => $url
     ]);
-    
+    exit;
   }
   // ===== UPLOAD ERROR HANDLER =====
   public function edit($id){

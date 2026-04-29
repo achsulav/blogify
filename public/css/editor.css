@@ -1,0 +1,283 @@
+:root {
+    --editor-toolbar-bg: #ffffff;
+    --editor-border: #f1f5f9;
+    --editor-text: #334155;
+    --editor-accent: #0f172a;
+    --editor-hover: #f8fafc;
+    --editor-active-bg: #f1f5f9;
+    --editor-active-text: #0f172a;
+    --editor-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.editor-container {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: white;
+    overflow: hidden;
+    margin-top: 1rem;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+.title-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 2.5rem;
+    font-weight: 800;
+    padding: 32px 32px 16px 32px;
+    font-family: var(--editor-font);
+    color: #0f172a;
+    letter-spacing: -0.025em;
+    background: transparent;
+    box-sizing: border-box;
+}
+
+.title-input::placeholder {
+    color: #cbd5e1;
+}
+
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: var(--editor-toolbar-bg);
+    border-bottom: 1px solid var(--editor-border);
+    flex-wrap: wrap;
+}
+
+.toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 8px;
+    border-right: 1px solid #f1f5f9;
+}
+
+.toolbar-group:last-child {
+    border-right: none;
+}
+
+.editor-toolbar button, 
+.editor-toolbar select {
+    background: transparent;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    color: var(--editor-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    font-family: var(--editor-font);
+    font-size: 14px;
+}
+
+.editor-toolbar button:hover {
+    background: var(--editor-hover);
+}
+
+.editor-toolbar button.active {
+    background: var(--editor-active-bg);
+    color: var(--editor-active-text);
+}
+
+.editor-toolbar button svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 1.5;
+    color: #64748b;
+}
+
+.editor-toolbar button.active svg {
+    color: var(--editor-accent);
+}
+
+.editor-toolbar select {
+    appearance: none;
+    padding: 6px 32px 6px 12px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+    cursor: pointer;
+    min-width: 100px;
+}
+
+.editor-toolbar select:hover {
+    background-color: var(--editor-hover);
+}
+
+#editor {
+    padding: 32px;
+    min-height: 500px;
+    outline: none;
+    font-family: var(--editor-font);
+    line-height: 1.8;
+    color: #1e293b;
+    font-size: 16px;
+}
+
+.tiptap h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.75em; color: #0f172a; }
+.tiptap h2 { font-size: 1.875rem; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 0.75em; color: #1e293b; }
+.tiptap p { margin-bottom: 1.25em; }
+
+.tiptap p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: #94a3b8;
+    pointer-events: none;
+    height: 0;
+}
+
+#import_md_btn {
+    font-weight: 500;
+    color: #64748b;
+    padding: 6px 12px !important;
+}
+
+.editor-main-layout {
+    display: flex;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.editor-content-area {
+    flex: 1;
+    min-width: 0;
+}
+
+.editor-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.sidebar-section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.sidebar-section h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.sidebar-section select, 
+.sidebar-section button {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.sidebar-section .category-select {
+    appearance: none;
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: var(--editor-font);
+    font-size: 14px;
+    color: #1e293b;
+    background-color: #f8fafc;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    cursor: pointer;
+}
+
+.sidebar-section .category-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.publish-btn {
+    background: #0f172a !important;
+    color: white !important;
+    font-weight: 600;
+    padding: 12px !important;
+    border-radius: 8px !important;
+    transition: background 0.2s;
+}
+
+.publish-btn:hover {
+    background: #1e293b !important;
+}
+
+.sidebar-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sidebar-action-btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #1e293b;
+}
+
+.sidebar-action-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+#commit_message_input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: var(--editor-font);
+    font-size: 15px;
+    color: #1e293b;
+    background: #f8fafc;
+    transition: all 0.2s;
+}
+
+#commit_message_input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.snapshot-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.snapshot-item:last-child {
+    border-bottom: none;
+}
+
+.snapshot-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    line-height: 1.4;
+}
+
+.snapshot-time {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 2px;
+}

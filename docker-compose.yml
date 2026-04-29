@@ -21,16 +21,16 @@ services:
     restart: always
     volumes:
       - .:/var/www
-    environment:
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - VITE_URL=http://localhost:5174
+    env_file:
+      - .env.docker
     networks:
       - blognet
 
   mysql:
     image: mysql:8.0
     restart: always
+    env_file:
+      - .env.docker
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: blogify
@@ -38,6 +38,8 @@ services:
       MYSQL_PASSWORD: root
     ports:
       - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
     networks:
       - blognet
 
@@ -48,11 +50,8 @@ services:
     volumes:
       - .:/var/www
     command: sh -c "npm install && npm run dev"
-    environment:
-      - VITE_PORT=5173
-      - VITE_HMR_HOST=localhost
-      - VITE_HMR_PORT=5174
-      - VITE_ORIGIN=http://localhost:5174
+    env_file:
+      - .env.docker
     ports:
       - "5174:5173"
     networks:
@@ -71,3 +70,5 @@ services:
 networks:
   blognet:
     driver: bridge
+volumes:
+  db_data:

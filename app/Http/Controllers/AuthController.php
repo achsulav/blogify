@@ -18,9 +18,22 @@ class AuthController extends BaseController
     $username = strtolower(trim($_POST['username'] ?? ''));
     $name = $_POST['name'] ?? '';
     $password = $_POST['password'] ?? '';
+    $phone = $_POST['phone'] ?? '';
 
-    if (empty($username) || empty($email) || empty($name) || empty($password)) {
+    if (empty($username) || empty($email) || empty($name) || empty($password) || empty($phone)) {
       Application::$app->session->setFlash('error', 'All fields are required');
+      $this->redirect('/register');
+      return;
+    }
+
+    if (!User::validateEmail($email)) {
+      Application::$app->session->setFlash('error', 'Invalid email format');
+      $this->redirect('/register');
+      return;
+    }
+
+    if (!User::validatePassword($password)) {
+      Application::$app->session->setFlash('error', 'Password must be at least 8 characters long');
       $this->redirect('/register');
       return;
     }
@@ -39,10 +52,21 @@ class AuthController extends BaseController
       return;
     }
 
-    $userModel->create($name, $username, $email, $password);
+    $userId = $userModel->create($name, $username, $email, $password, $phone);
 
-    Application::$app->session->setFlash('success', 'Registration successful. Please login.');
-    $this->redirect('/login');
+    if ($userId) {
+        $otpService = new \App\Services\OtpService();
+        $smsService = new \App\Services\SmsService();
+        $otp = $otpService->generateOtp($userId);
+        $smsService->sendSms($phone, "Your Blogify OTP is: $otp. It expires in 10 minutes.");
+
+        Application::$app->session->set('pending_verification_user_id', $userId);
+        Application::$app->session->setFlash('success', 'Registration successful. Please verify your phone number.');
+        $this->redirect('/verify-otp');
+    } else {
+        Application::$app->session->setFlash('error', 'Registration failed. Please try again.');
+        $this->redirect('/register');
+    }
 
   }
   public function Login(){
@@ -53,12 +77,25 @@ class AuthController extends BaseController
       $this->redirect('/login');
       return;
     }
+    if (!$user['is_verified']) {
+        Application::$app->session->set('pending_verification_user_id', $user['id']);
+        
+        $otpService = new \App\Services\OtpService();
+        $smsService = new \App\Services\SmsService();
+        $otp = $otpService->generateOtp($user['id']);
+        $smsService->sendSms($user['phone'], "Your Blogify OTP is: $otp. It expires in 10 minutes.");
+        
+        Application::$app->session->setFlash('info', 'Please verify your phone number to continue.');
+        $this->redirect('/verify-otp');
+        return;
+    }
+
     Application::$app->session->set('user',$user['id']);
     Application::$app->session->set('user_name',$user['name']);
     Application::$app->session->set('username',$user['username']);
     Application::$app->session->setFlash('success', 'Login successful');
     
-    // Redirect to user's subdomain
+    // Redirect to user's subdomain (requires Traefik + dnsmasq running via run.sh)
     $username = $user['username'];
     $this->redirect("http://{$username}.blogify.dev/dashboard");
 

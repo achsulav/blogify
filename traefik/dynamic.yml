@@ -1,13 +1,14 @@
 tls:
   certificates:
-    - certFile: "traefik/_wildcard.blogify.dev+1.pem"
-      keyFile: "traefik/_wildcard.blogify.dev+1-key.pem"
+    - certFile: "app/SSL/_wildcard.blogify.dev+1.pem"
+      keyFile: "app/SSL/_wildcard.blogify.dev+1-key.pem"
 
 http:
   routers:
     blog:
       rule: "Host(`blogify.dev`) || HostRegexp(`{subdomain:[a-z0-9-]+}.blogify.dev`)"
       entryPoints:
+        - web
         - websecure
       service: blog-service
       tls: {}

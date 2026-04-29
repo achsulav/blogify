@@ -26,6 +26,11 @@
 <label>Password</label>
 <input type="password" name="password" required>
 </div>
+<div class="form-group">
+<label>Phone Number</label>
+<input type="tel" name="phone" placeholder="+1234567890" required>
+<small>Enter phone number with country code for OTP.</small>
+</div>
 <button type="submit" class="btn-primary full">Create Account</button>
 </form>
 <p class="auth-link">Already have an account? <a href="/login">Login</a></p>

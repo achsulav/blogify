@@ -1,9 +1,11 @@
 <?php
 use App\Foundation\Application;
 ?>
-<h1><?= htmlspecialchars($post['title']) ?></h1>
 <div class="post-content">
-<?= $post['content_html'] ?>
+    <h1><?= htmlspecialchars($post['title']) ?></h1>
+    <div class="content">
+        <?= $post['content_html'] ?>
+    </div>
 </div>
 <h3>Leave a Comment</h3>
 

@@ -80,5 +80,23 @@ button:disabled {
 
 /* Ensure editor has a minimum height */
 .ProseMirror {
-  min-height: 100px;
+  min-height: 400px;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 4px;
 }
+
+/* Image styling in editor */
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.ProseMirror img.ProseMirror-selectednode {
+  outline: 3px solid #000;
+}
+
