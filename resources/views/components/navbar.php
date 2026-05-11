@@ -14,7 +14,7 @@ $isSubdomain = $subdomain && !in_array($subdomain, ['blogify', 'www']);
 $isBlogPage = strpos($requestPath,'/blog') === 0 || ($requestPath !== '/' && !in_array($requestPath, ['/login', '/register', '/logout', '/dashboard', '/create-post', '/store-post', '/upload-image', '/post/edit', '/post/update', '/post/delete', '/test', '/create-user', '/comment/store', '/comment/update', '/comment/delete']));
 $showNav = (!$isLoggedIn || $isHome) && !$isSubdomain;
 ?>
-<header class="site-header">
+<header class="site-header <?= $isBlogPage ? 'blog-page' : '' ?>">
 
 <div class="container inner-content">
 <?php if(!$isBlogPage): ?>

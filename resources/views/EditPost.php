@@ -1,6 +1,7 @@
 <link rel="stylesheet" href="/css/editor.css">
 <form method="POST" action="/post/update/<?= $post['id'] ?>">
 <div class="editor-main-layout">
+    <!-- Unified Editor on the Left -->
     <div class="editor-content-area">
         <div class="editor-container">
             <div class="editor-toolbar">
@@ -64,6 +65,7 @@
         </div>
     </div>
 
+    <!-- Sidebar on the Right -->
     <aside class="editor-sidebar">
         <div class="sidebar-section">
             <h3>Update</h3>
@@ -108,4 +110,3 @@
 
 <script type="module" src="<?= vite_asset('@vite/client') ?>"></script>
 <script type="module" src="<?= vite_asset('resources/js/editor.js') ?>"></script>
-

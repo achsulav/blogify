@@ -1,23 +1,22 @@
-button {
+.editor-main-layout button {
   padding: var(--button-height);
   border: var(--border-radius-xs) solid #ccc;
   background-color: var(--bg-white);
   cursor: pointer;
 }
 
-button.is-active {
+.editor-main-layout button.is-active {
   background-color: var(--bg-dark);
   color: var(--bg-white);
   font-weight: bold;
-
 }
 
-button.active {
+.editor-main-layout button.active {
   background-color: #000;
   color: #fff;
 }
 
-button:disabled {
+.editor-main-layout button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

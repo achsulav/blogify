@@ -1,6 +1,7 @@
 <link rel="stylesheet" href="/css/editor.css">
 <form action="/store-post" method="POST">
 <div class="editor-main-layout">
+    <!-- Unified Editor on the Left -->
     <div class="editor-content-area">
         <div class="editor-container">
             <div class="editor-toolbar">
@@ -64,6 +65,7 @@
         </div>
     </div>
 
+    <!-- Sidebar on the Right -->
     <aside class="editor-sidebar">
         <div class="sidebar-section">
             <h3>Publish</h3>

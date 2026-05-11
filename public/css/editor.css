@@ -58,7 +58,7 @@
     border-right: none;
 }
 
-.editor-toolbar button, 
+.editor-toolbar button,
 .editor-toolbar select {
     background: transparent;
     border: none;
@@ -119,9 +119,25 @@
     font-size: 16px;
 }
 
-.tiptap h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.75em; color: #0f172a; }
-.tiptap h2 { font-size: 1.875rem; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 0.75em; color: #1e293b; }
-.tiptap p { margin-bottom: 1.25em; }
+.tiptap h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.75em;
+    color: #0f172a;
+}
+
+.tiptap h2 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.75em;
+    color: #1e293b;
+}
+
+.tiptap p {
+    margin-bottom: 1.25em;
+}
 
 .tiptap p.is-editor-empty:first-child::before {
     content: attr(data-placeholder);
@@ -140,7 +156,11 @@
 .editor-main-layout {
     display: flex;
     gap: 24px;
-    margin-top: 24px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 24px;
+    box-sizing: border-box;
+    align-items: flex-start;
 }
 
 .editor-content-area {
@@ -154,6 +174,7 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
+    margin-top: 0; /* Align perfectly with toolbar at top */
 }
 
 .sidebar-section {
@@ -173,7 +194,7 @@
     letter-spacing: 0.05em;
 }
 
-.sidebar-section select, 
+.sidebar-section select,
 .sidebar-section button {
     width: 100%;
     margin-bottom: 8px;

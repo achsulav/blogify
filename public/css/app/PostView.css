@@ -1,47 +1,230 @@
-.post-content {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    line-height: 1.8;
-    color: #1e293b;
-    font-size: 18px;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 40px 20px;
+/* Scoped Post View Styles */
+.view-post-page {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+    min-height: 100vh;
 }
 
-.post-content h1 {
+.view-post-page .post-content, 
+.view-post-page .comments-wrapper {
+    width: 100%;
+    max-width: 720px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.view-post-page .post-content {
+    padding-top: 40px;
+    margin-bottom: 40px;
+}
+
+.view-post-page .post-content .post-header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.view-post-page .post-content h1.post-title {
     font-size: 3rem;
     font-weight: 800;
-    letter-spacing: -0.025em;
-    margin-bottom: 1rem;
     color: #0f172a;
-    line-height: 1.1;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
 }
 
-.post-content h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    letter-spacing: -0.025em;
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
-    color: #1e293b;
+.view-post-page .post-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #64748b;
+    font-size: 1rem;
+    font-weight: 500;
 }
 
-.post-content p {
-    margin-bottom: 1.5em;
+.view-post-page .separator {
+    color: #cbd5e1;
 }
 
-.post-content img {
+.view-post-page .author-name {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.view-post-page .post-content .content {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: #292929;
+}
+
+/* Images & Media in Post */
+.view-post-page .post-content .content img, 
+.view-post-page .post-content .content iframe {
     max-width: 100%;
     height: auto;
-    border-radius: 12px;
-    margin: 2rem 0;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin: 20px 0;
 }
 
-.post-content blockquote {
-    border-left: 4px solid #e2e8f0;
-    padding-left: 1.5rem;
-    font-style: italic;
-    color: #475569;
-    margin: 2rem 0;
+/* Comment Section Styling */
+.view-post-page .comments-wrapper {
+    padding-top: 60px;
+    border-top: 1px solid #f1f5f9;
+    margin-bottom: 120px;
+}
+
+.view-post-page .comments-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 40px;
+}
+
+/* Premium Comment Editor */
+.view-post-page .comment-editor-container {
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    margin-bottom: 50px;
+}
+
+.view-post-page .editor-toolbar {
+    background: #fff;
+    padding: 8px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    gap: 8px;
+}
+
+.view-post-page .toolbar-btn {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #0f172a;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.view-post-page .toolbar-btn:hover {
+    background: #0f172a;
+    color: #fff;
+}
+
+.view-post-page #comment-editor, 
+.view-post-page .edit-editor {
+    min-height: 80px;
+    padding: 16px 20px;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: #292929;
+    outline: none;
+}
+
+.view-post-page #comment-editor:empty:before {
+    content: attr(placeholder);
+    color: #94a3b8;
+}
+
+.view-post-page .editor-footer {
+    padding: 10px 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid #f1f5f9;
+}
+
+/* The Respond Button - Modern Black & Rounded */
+.view-post-page .btn-respond {
+    background: #000 !important;
+    color: #fff !important;
+    border: none !important;
+    padding: 10px 24px !important;
+    border-radius: 100px !important;
+    font-weight: 500 !important;
+    font-size: 0.95rem !important;
+    cursor: pointer !important;
+    transition: transform 0.2s, opacity 0.2s !important;
+}
+
+.view-post-page .btn-respond:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+}
+
+.view-post-page .btn-cancel {
+    background: transparent;
+    color: #64748b;
+    border: none;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+/* Comment Cards */
+.view-post-page .comment-card {
+    padding: 32px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.view-post-page .user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.view-post-page .user-name {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.view-post-page .comment-date {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.view-post-page .comment-content {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: #292929;
+}
+
+.view-post-page .comment-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 16px;
+}
+
+.view-post-page .action-link {
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0;
+}
+
+.view-post-page .action-link:hover {
+    color: #0f172a;
+    text-decoration: underline;
+}
+
+.view-post-page .no-comments {
+    padding: 80px 0;
+    text-align: center;
+    color: #64748b;
+    background: #f8fafc;
+    border-radius: 16px;
 }

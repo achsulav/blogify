@@ -35,7 +35,7 @@ class CommentController extends BaseController{
       ':content'=>$content,
       ':id' => $commentId
     ]);
-    echo json_encode(['status'=>'success','content'=>htmlspecialchars($content)]);
+    echo json_encode(['status'=>'success','content'=>strip_tags($content, '<b><i><strong><em><p><br><u>')]);
   }
   public function delete(){
     header('Content-Type:application/json');
@@ -99,7 +99,7 @@ class CommentController extends BaseController{
       'comment' => [
         'id' => $commentId,
         'user_name' => $user['name'],
-        'content' => htmlspecialchars($content),
+        'content' => strip_tags($content, '<b><i><strong><em><p><br><u>'),
         'created_at'=> date('Y-m-d H:i:s'),
         'user_id'=> $userId
 

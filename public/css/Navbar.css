@@ -1,5 +1,6 @@
 body {
   font-family: var(--font-family);
+  overflow-x: hidden;
 }
 
 .site-header {
@@ -10,7 +11,22 @@ body {
   position: sticky;
   /* Screen to Face*/
   z-index: 100;
+}
 
+.site-header.blog-page .inner-content {
+  justify-content: center;
+  position: relative;
+}
+
+.site-header.blog-page .nav-actions {
+  position: absolute;
+  right: var(--space-xll);
+}
+
+.site-header.blog-page .logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
 }
 
 .logo {
@@ -22,7 +38,6 @@ body {
   font-weight: var(--font-bold);
   /*space between letter*/
   letter-spacing: var(--space-xxs);
-  transform: translate(-20%);
 }
 
 .container {

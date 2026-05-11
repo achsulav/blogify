@@ -1,8 +1,10 @@
-<form method="GET" action="/blog" class="search-form">
-<input type="text" name="search" placeholder="Search posts.." value="<?= htmlspecialchars($search ?? '') ?>">
-<button type="submit">Search</button>
-  </form>
-<h1>Latest Blog Posts</h1>
+<div class="blog-list-container">
+    <form method="GET" action="/blog" class="search-form">
+        <input type="text" name="search" placeholder="Search posts.." value="<?= htmlspecialchars($search ?? '') ?>">
+        <button type="submit">Search</button>
+    </form>
+    <h1>Latest Blog Posts</h1>
+</div>
 
 <?php if (empty($posts)): ?>
 <p>No result found.</p>
@@ -43,9 +45,32 @@ Read More →
 
 
 <style>
-.blog-list {
+.blog-list-container, .blog-list {
     max-width: 900px;
     margin: 40px auto;
+    padding: 0 20px;
+}
+
+.search-form {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+}
+
+.search-form button {
+    padding: 10px 20px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
 }
 
 .blog-card {
