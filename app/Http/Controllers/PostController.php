@@ -97,7 +97,6 @@ class PostController extends BaseController
     ]);
   }
   public function store(){
-    file_put_contents(__DIR__ . '/../../../debug_post.log', "STORE POST DATA: " . print_r($_POST, true) . "\n", FILE_APPEND);
     $title = $_POST['title'] ?? '';
     $html = $_POST['content_html'] ?? '';
       Application::$app->session->set('old',[
@@ -223,7 +222,6 @@ $this->redirect('/dashboard');
 
   }
   public function update($id){
-    file_put_contents(__DIR__ . '/../../../debug_post.log', "UPDATE POST DATA (ID $id): " . print_r($_POST, true) . "\n", FILE_APPEND);
     $userId = Application::$app->session->get('user');
     $title = trim($_POST['title'] ?? '');
     $content = $_POST['content_html'] ?? '';

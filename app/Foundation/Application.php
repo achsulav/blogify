@@ -13,8 +13,20 @@ class Application
     public function __construct()
     {
       if (file_exists(__DIR__ . '/../../.env')) {
-          $dotenv = \Dotenv\Dotenv::createUnsafeImmutable(__DIR__ . '/../../');
-          $dotenv->safeLoad();
+          $lines = file(__DIR__ . '/../../.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+          foreach ($lines as $line) {
+              if (strpos(trim($line), '#') === 0) continue;
+              list($name, $value) = explode('=', $line, 2) + [null, null];
+              if ($name !== null && $value !== null) {
+                  $name = trim($name);
+                  $value = trim($value, " \t\n\r\0\x0B\"'");
+                  if (!array_key_exists($name, $_ENV) && !array_key_exists($name, $_SERVER) && getenv($name) === false) {
+                      putenv(sprintf('%s=%s', $name, $value));
+                      $_ENV[$name] = $value;
+                      $_SERVER[$name] = $value;
+                  }
+              }
+          }
       }
 
       self::$app = $this;

@@ -39,12 +39,12 @@ $fullName = Application::$app->session->get('user_name');
 </td>
 
 <td>
-<a href="http://<?= Application::$app->session->get('username') ?>.blogify.dev/<?= $post['slug'] ?>" target="_blank">
+<a href="http://<?= Application::$app->session->get('username') ?>.blogify.dev/<?= $post['slug'] ?>" target="_blank" class="slug-link">
 <?= htmlspecialchars($post['slug']) ?>
 </a>
 </td>
 
-<td>
+<td class="date-text">
 <?= date('M d, Y', strtotime($post['created_at'])) ?>
 </td>
 <td class="actions">

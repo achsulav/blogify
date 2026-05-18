@@ -1,6 +1,6 @@
 services:
   nginx:
-    image: nginx:latest
+    image: nginx:alpine
     container_name: blogify_nginx
     restart: always
     ports:
@@ -57,15 +57,7 @@ services:
     networks:
       - blognet
 
-  dnsmasq:
-    image: strm/dnsmasq
-    container_name: blogify_dnsmasq
-    privileged: true
-    # Removed port 53 mapping to avoid conflict with host (systemd-resolved)
-    volumes:
-      - ./docker/dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf
-    networks:
-      - blognet
+
 
 networks:
   blognet:

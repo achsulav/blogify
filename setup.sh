@@ -14,7 +14,7 @@ else
 fi
 
 # 2. Check for Port 80 Conflict
-if lsof -Pi :80 -sTCP:LISTEN -t >/dev/null ; then
+if ss -tuln | grep -q -E ":80\b" ; then
     echo "⚠️  Error: Port 80 is already in use by another process (likely local Nginx)."
     echo "👉 Run 'sudo systemctl stop nginx' to fix this."
     exit 1
