@@ -103,6 +103,18 @@
             </button>
             <input type="file" id="md_file_input" accept=".md,text/markdown" style="display:none;">
         </div>
+
+        <div class="sidebar-section">
+            <h3>AI Assistant</h3>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <input type="text" id="ai-prompt" placeholder="Ask AI to write..." style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;">
+                <button type="button" id="btn-generate-ai" class="sidebar-action-btn" style="padding: 8px; justify-content: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
+                    Generate
+                </button>
+                <span id="ai-loading" style="display:none; font-size: 12px; color: #666; text-align: center;">Generating...</span>
+            </div>
+        </div>
     </aside>
 </div>
 <input type="hidden" name="content_html" id="content_input" value="<?= htmlspecialchars($old['content_html'] ?? '')?>">

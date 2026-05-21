@@ -514,6 +514,48 @@ if (editorElement) {
   bindActiveState(boldBtn, () => editor.isActive('bold'));
   bindActiveState(italicBtn, () => editor.isActive('italic'));
   bindActiveState(underlineBtn, () => editor.isActive('underline'));
+
+  const btnGenerateAi = document.querySelector('#btn-generate-ai');
+  const aiPromptInput = document.querySelector('#ai-prompt');
+  const aiLoading = document.querySelector('#ai-loading');
+
+  btnGenerateAi?.addEventListener('click', async () => {
+    console.log("Generate AI button clicked");
+    const prompt = aiPromptInput.value.trim();
+    if (!prompt) {
+        alert("Please enter a prompt for the AI first!");
+        return;
+    }
+
+    btnGenerateAi.disabled = true;
+    aiLoading.style.display = 'inline';
+
+    try {
+        const response = await fetch('/api/generate-content', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ prompt: prompt })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            editor.commands.insertContent(data.content);
+            aiPromptInput.value = '';
+        } else {
+            alert(data.error || 'Failed to generate content');
+        }
+    } catch (error) {
+        console.error("AI Generation Error:", error);
+        alert('A network error occurred.');
+    } finally {
+        btnGenerateAi.disabled = false;
+        aiLoading.style.display = 'none';
+    }
+  });
+
   const form = editorElement.closest('form')
   const hiddenInput = document.querySelector('#content_input')
   console.log('Editor JS loaded. Hidden input found:', !!hiddenInput);

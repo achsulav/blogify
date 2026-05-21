@@ -1,3 +1,4 @@
+
 import '../css/toast.css';
 import './toast.js';
 
@@ -21,11 +22,25 @@ const viteLogo = `
 `;
 
 console.log("%c Blogify %c Vite Loaded ",
-    "background: #bd34fe; color: #fff; padding: 2px 4px; border-radius: 3px 0 0 3px;",
-    "background: #41d1ff; color: #000; padding: 2px 4px; border-radius: 0 3px 3px 0;"
+  "background: #bd34fe; color: #fff; padding: 2px 4px; border-radius: 3px 0 0 3px;",
+  "background: #41d1ff; color: #000; padding: 2px 4px; border-radius: 0 3px 3px 0;"
 );
 
 // Initialize any global frontend features here
 document.addEventListener('DOMContentLoaded', () => {
-    // Add any global initialization logic
+  // Add any global initialization logic
 });
+
+// Register Service Worker for Offline Support
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('%c SW registered ', 'background: #000; color: #fff', registration);
+      })
+      .catch(error => {
+        console.error('SW registration failed: ', error);
+      });
+  });
+}
+

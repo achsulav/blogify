@@ -70,8 +70,10 @@ class Application
 
         $this->router->get('/post/edit/{id}', 'PostController@edit',['auth']);
         $this->router->post('/post/update/{id}', 'PostController@update',['auth']);
-
         $this->router->post('/post/delete','PostController@delete',['auth']);
+
+        // AI Generation Route
+        $this->router->post('/api/generate-content', 'AiController@generate', ['auth']);
 
 
         // Note: /{slug} is already registered above, which will conflict with /{username}.
