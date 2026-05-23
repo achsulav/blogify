@@ -168,3 +168,33 @@ hr {
   color: #666;
   font-size: 14px;
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 0 15px;
+    margin: var(--space-md) auto;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .posts-table-wrapper {
+    /* Allow horizontal scrolling for the table on small screens */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .posts-table th,
+  .posts-table td {
+    padding: 12px 15px;
+    white-space: nowrap; /* Prevent text wrapping in tiny columns */
+  }
+
+  .actions {
+    gap: 8px;
+  }
+}

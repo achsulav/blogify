@@ -19,6 +19,15 @@ class User{
     // Enforce minimum 8 characters
     return strlen($password) >= 8;
   }
+
+  public static function validateName(string $name): bool {
+    $name = trim($name);
+    // Must be at least 3 characters and contain only letters and spaces
+    if (strlen($name) < 3) {
+        return false;
+    }
+    return (bool) preg_match('/^[a-zA-Z\s]+$/', $name);
+  }
   public function create(string $name, string $username, string $email, string $password, string $phone = null) {
     $stmt = $this->db->prepare("INSERT INTO users(name, username, email, password, phone) VALUES(:name, :username, :email, :password, :phone)");
     $stmt->execute([

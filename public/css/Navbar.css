@@ -112,3 +112,26 @@ nav {
   padding: var(--button-height);
 
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .inner-content {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  
+  .nav-actions {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .nav-links {
+    display: none; /* Hide standard links on mobile for a cleaner look */
+  }
+
+  .site-header.blog-page .nav-actions {
+    position: static;
+    margin-top: 10px;
+  }
+}

@@ -26,6 +26,12 @@ class AuthController extends BaseController
       return;
     }
 
+    if (!User::validateName($name)) {
+      Application::$app->session->setFlash('error', 'Name must contain only letters and spaces, and be at least 3 characters.');
+      $this->redirect('/register');
+      return;
+    }
+
     if (!User::validateEmail($email)) {
       Application::$app->session->setFlash('error', 'Invalid email format');
       $this->redirect('/register');

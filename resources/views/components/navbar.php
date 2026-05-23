@@ -32,7 +32,7 @@ $showNav = (!$isLoggedIn || $isHome) && !$isSubdomain;
 <?php if($showNav): ?>
 <ul class="nav-links">
 <li><a href="#product" class="nav-link">Product</a></li>
-<li><a href="#explore" class="nav-link">Explore</a></li>
+<li><a href="/blog" class="nav-link">Explore</a></li>
 <li><a href="#resources" class="nav-link">Resources</a></li>
 <li><a href="#pricing" class="nav-link">Pricing</a></li>
 </ul>

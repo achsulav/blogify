@@ -6,6 +6,7 @@
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#000000">
 <meta name="description" content="Blogify - Post and See Others">
+<title><?= $title ?? 'Home | Blogify' ?></title>
 <link rel="stylesheet" href='/css/Main.css?v=2'>
 <?php if ($css = vite_css('resources/js/main.js')): ?>
     <link rel="stylesheet" href="<?= $css ?>">
