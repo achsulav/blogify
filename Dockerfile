@@ -21,8 +21,7 @@ RUN apt-get update && apt-get install -y \
 # Fix path for php-fpm to match potential dashboard overrides
 RUN ln -s /usr/local/sbin/php-fpm /usr/sbin/php-fpm
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 
 # Set working directory
 WORKDIR /var/www
@@ -33,8 +32,7 @@ COPY . /var/www
 # Copy built assets from Stage 1
 COPY --from=asset-builder /app/public/build /var/www/public/build
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+
 
 # Copy Nginx configuration
 COPY docker/nginx/render.conf /etc/nginx/sites-available/default
