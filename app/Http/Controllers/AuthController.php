@@ -100,17 +100,26 @@ class AuthController extends BaseController
     Application::$app->session->set('user_name',$user['name']);
     Application::$app->session->set('username',$user['username']);
     Application::$app->session->setFlash('success', 'Login successful');
-    
-    // Redirect to user's subdomain (requires Traefik + dnsmasq running via run.sh)
-    $username = $user['username'];
-    $this->redirect("http://{$username}.blogify.dev/dashboard");
-
+    // Redirect to user's subdomain locally, or relative path on Render
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    if (str_ends_with($host, '.onrender.com')) {
+        $this->redirect('/dashboard');
+    } else {
+        $username = $user['username'];
+        $this->redirect("http://{$username}.blogify.dev/dashboard");
+    }
   }
   public function Logout(){
     Application::$app->session->remove('user');
     Application::$app->session->remove('user_name');
     Application::$app->session->remove('username');
     Application::$app->session->setFlash('success', 'Logged out successfully');
-    $this->redirect('http://blogify.dev/');
+    
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    if (str_ends_with($host, '.onrender.com')) {
+        $this->redirect('/');
+    } else {
+        $this->redirect('http://blogify.dev/');
+    }
   }
 }
