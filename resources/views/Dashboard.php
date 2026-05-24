@@ -35,7 +35,9 @@ $fullName = Application::$app->session->get('user_name');
 <?php foreach ($posts as $post): ?>
 <tr>
 <td>
+<a href="<?= post_url(Application::$app->session->get('username'), $post['slug']) ?>" target="_blank" class="slug-link">
 <?= htmlspecialchars($post['title']) ?>
+</a>
 </td>
 
 <td>

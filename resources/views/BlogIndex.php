@@ -17,7 +17,7 @@
 <div class="blog-card">
 
 <h2>
-<a href="http://<?= htmlspecialchars($post['username']) ?>.blogify.dev/<?= htmlspecialchars($post['slug']) ?>">
+<a href="<?= post_url($post['username'], $post['slug']) ?>">
 <?= htmlspecialchars($post['title']) ?>
 </a>
 </h2>
@@ -31,7 +31,7 @@ By <?= htmlspecialchars($post['author']) ?> •
 <?= substr(strip_tags($post['content_html'] ?? ''), 0, 150) ?>...
 </p>
 
-<a href="http://<?= htmlspecialchars($post['username']) ?>.blogify.dev/<?= htmlspecialchars($post['slug']) ?>" class="read-more">
+<a href="<?= post_url($post['username'], $post['slug']) ?>" class="read-more">
 Read More →
 </a>
 

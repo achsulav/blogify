@@ -10,7 +10,7 @@
 
 <div class="blog-card">
 <h2>
-<a href="http://<?= htmlspecialchars($user['username']) ?>.blogify.dev/<?= htmlspecialchars($post['slug']) ?>">
+<a href="<?= post_url($user['username'], $post['slug']) ?>">
 <?= htmlspecialchars($post['title']) ?>
 </a>
 </h2>
