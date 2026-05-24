@@ -10,8 +10,8 @@ public function __construct()
     $parts = explode('.', $host);
     
     // If we have at least 2 parts (e.g., blogify.dev), set cookie domain to .blogify.dev
-    // Do NOT do this for onrender.com, as it's a public suffix and browsers will reject the cookie
-    if (count($parts) >= 2 && !filter_var($host, FILTER_VALIDATE_IP) && $host !== 'localhost' && !str_ends_with($host, '.onrender.com')) {
+    // Do NOT do this for production domains, to prevent public suffix list blocking
+    if (count($parts) >= 2 && !filter_var($host, FILTER_VALIDATE_IP) && $host !== 'localhost' && !is_production()) {
         $domain = '.' . implode('.', array_slice($parts, -2));
         $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') || 
                    (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');

@@ -20,8 +20,7 @@ class AuthMiddleware implements Middleware{
         if (strpos($uri, '/comment/') !== 0) {
             if ($subdomain !== $loggedInUsername) {
                 Application::$app->session->setFlash('error', 'Unauthorized access to this subdomain.');
-                $host = $_SERVER['HTTP_HOST'] ?? '';
-                if (str_ends_with($host, '.onrender.com')) {
+                if (is_production()) {
                     header("Location: /dashboard");
                 } else {
                     header("Location: http://{$loggedInUsername}.blogify.dev/dashboard");

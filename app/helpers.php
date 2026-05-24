@@ -35,11 +35,21 @@ function vite_css(string $path)
     return '';
 }
 
-function post_url(string $username, string $slug)
+function is_production(): bool
 {
     $host = $_SERVER['HTTP_HOST'] ?? '';
-    // If we are on Render (or an IP/localhost without subdomains), use the path-based profile route
-    if (str_ends_with($host, '.onrender.com') || filter_var(explode(':', $host)[0], FILTER_VALIDATE_IP) || str_starts_with($host, 'localhost')) {
+    $hostWithoutPort = explode(':', $host)[0];
+    
+    if ($hostWithoutPort === 'localhost' || filter_var($hostWithoutPort, FILTER_VALIDATE_IP) || str_ends_with($hostWithoutPort, 'blogify.dev')) {
+        return false;
+    }
+    return true;
+}
+
+function post_url(string $username, string $slug)
+{
+    // If we are in production (Render or custom domain), use the path-based profile route
+    if (is_production()) {
         // We will just return the slug, because PostController@show fetches by slug
         return "/{$slug}";
     }
@@ -48,8 +58,7 @@ function post_url(string $username, string $slug)
 
 function user_profile_url(string $username)
 {
-    $host = $_SERVER['HTTP_HOST'] ?? '';
-    if (str_ends_with($host, '.onrender.com') || filter_var(explode(':', $host)[0], FILTER_VALIDATE_IP) || str_starts_with($host, 'localhost')) {
+    if (is_production()) {
         return "/{$username}";
     }
     return "http://{$username}.blogify.dev/";
@@ -57,8 +66,7 @@ function user_profile_url(string $username)
 
 function home_url()
 {
-    $host = $_SERVER['HTTP_HOST'] ?? '';
-    if (str_ends_with($host, '.onrender.com')) {
+    if (is_production()) {
         return "/";
     }
     return "http://blogify.dev/";

@@ -91,8 +91,8 @@ class Application
         $host = $_SERVER['HTTP_HOST'] ?? '';
         $host = explode(':', $host)[0];
 
-        // Ignore IP addresses, localhost, and Render domains (since they have 3 parts but no wildcard subdomains)
-        if (filter_var($host, FILTER_VALIDATE_IP) || $host === 'localhost' || str_ends_with($host, '.onrender.com')) {
+        // Ignore IP addresses, localhost, and production domains (since they have 3+ parts but no wildcard subdomains on free tier)
+        if (is_production() || filter_var($host, FILTER_VALIDATE_IP) || $host === 'localhost') {
             return null;
         }
 

@@ -101,8 +101,7 @@ class AuthController extends BaseController
     Application::$app->session->set('username',$user['username']);
     Application::$app->session->setFlash('success', 'Login successful');
     // Redirect to user's subdomain locally, or relative path on Render
-    $host = $_SERVER['HTTP_HOST'] ?? '';
-    if (str_ends_with($host, '.onrender.com')) {
+    if (is_production()) {
         $this->redirect('/dashboard');
     } else {
         $username = $user['username'];
@@ -115,8 +114,7 @@ class AuthController extends BaseController
     Application::$app->session->remove('username');
     Application::$app->session->setFlash('success', 'Logged out successfully');
     
-    $host = $_SERVER['HTTP_HOST'] ?? '';
-    if (str_ends_with($host, '.onrender.com')) {
+    if (is_production()) {
         $this->redirect('/');
     } else {
         $this->redirect('http://blogify.dev/');
