@@ -1,6 +1,5 @@
 <?php
 namespace App\Foundation;
-require __DIR__ . '/../../vendor/autoload.php';
 use App\Foundation\Application;
 
 abstract class Migration
