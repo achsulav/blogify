@@ -44,6 +44,12 @@ class AuthController extends BaseController
       return;
     }
 
+    if (!User::validatePhone($phone)) {
+      Application::$app->session->setFlash('error', 'Invalid phone number. Must start with +977 and be a valid NTC or Ncell number.');
+      $this->redirect('/register');
+      return;
+    }
+
     $existingEmail = $userModel->findByEmail($email);
     if($existingEmail){
       Application::$app->session->setFlash('error', 'Email already exists');

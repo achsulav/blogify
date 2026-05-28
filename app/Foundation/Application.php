@@ -61,6 +61,10 @@ class Application
 
         $this->router->get('/dashboard','DashboardController@index',['auth']);
 
+        $this->router->get('/onboarding', 'OnboardingController@show', ['auth']);
+        $this->router->post('/api/onboarding/save', 'OnboardingController@save', ['auth']);
+        $this->router->get('/settings/interests', 'OnboardingController@settings', ['auth']);
+
         $this->router->get('/create-post','PostController@create',['auth']);
         $this->router->post('/store-post','PostController@store',['auth']);
 
@@ -83,6 +87,16 @@ class Application
         $this->router->post('/comment/store','CommentController@store',['auth']);
         $this->router->post('/comment/update','CommentController@update',['auth']);
         $this->router->post('/comment/delete','CommentController@delete',['auth']);
+
+        // Engagement Routes
+        $this->router->post('/api/engagement/like', 'EngagementController@toggleLike', ['auth']);
+        $this->router->post('/api/engagement/bookmark', 'EngagementController@toggleBookmark', ['auth']);
+
+        // Search API
+        $this->router->get('/api/search', 'SearchController@index');
+
+        // Feed API
+        $this->router->get('/api/feed/for-you', 'FeedController@getForYouFeed', ['auth']);
 
     }
 

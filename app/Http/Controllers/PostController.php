@@ -306,6 +306,15 @@ $this->redirect('/dashboard');
 
     $where = "WHERE 1=1";
     $params = [];
+    
+    // Personalized Feed Logic
+    $userId = Application::$app->session->get('user');
+    $userInterests = [];
+    if ($userId && empty($categorySlug) && empty($search)) {
+        $userModel = new \App\Models\User(Application::$app->db);
+        $interests = $userModel->getInterests($userId);
+        $userInterests = array_column($interests, 'id');
+    }
     $subdomain = Application::$app->getSubdomain();
     $blogOwner = null;
     if ($subdomain && $subdomain !== 'blogify') {
@@ -338,7 +347,14 @@ $this->redirect('/dashboard');
       $page = $totalPages;
       $offset = ($page - 1) * $limit;
     }
-    $sql = "SELECT posts.*, users.name AS author, users.username, categories.name AS category_name FROM posts JOIN users ON posts.user_id = users.id LEFT JOIN categories ON posts.category_id = categories.id $where ORDER BY posts.created_at DESC LIMIT :limit OFFSET :offset";
+    $interestOrder = "";
+    if (!empty($userInterests)) {
+        // Safe because values are ints from DB
+        $inClause = implode(',', array_map('intval', $userInterests));
+        $interestOrder = "CASE WHEN posts.category_id IN ($inClause) THEN 1 ELSE 0 END DESC, ";
+    }
+
+    $sql = "SELECT posts.*, users.name AS author, users.username, categories.name AS category_name FROM posts JOIN users ON posts.user_id = users.id LEFT JOIN categories ON posts.category_id = categories.id $where ORDER BY $interestOrder posts.created_at DESC LIMIT :limit OFFSET :offset";
     $stmt = $db->prepare($sql);
 
     if(!empty($search)){

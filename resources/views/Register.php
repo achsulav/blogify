@@ -28,8 +28,8 @@
 </div>
 <div class="form-group">
 <label>Phone Number</label>
-<input type="tel" name="phone" placeholder="+1234567890" required>
-<small>Enter phone number with country code for OTP.</small>
+<input type="tel" name="phone" placeholder="+97798XXXXXXXX" pattern="^\+977(98[0-2]|98[4-6]|97[4-6])\d{7}$" required>
+<small>Enter valid NTC or Ncell number starting with +977.</small>
 </div>
 <button type="submit" class="btn-primary full">Create Account</button>
 </form>

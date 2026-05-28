@@ -28,19 +28,131 @@ console.log("%c Blogify %c Vite Loaded ",
 
 // Initialize any global frontend features here
 document.addEventListener('DOMContentLoaded', () => {
-  // Add any global initialization logic
+  // Engagement: Likes
+  document.querySelectorAll('.toggle-like').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const postId = btn.getAttribute('data-id');
+          const icon = btn.querySelector('i');
+          const countSpan = btn.querySelector('.likes-count');
+          
+          try {
+              const res = await fetch('/api/engagement/like', {
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify({ post_id: postId })
+              });
+              const data = await res.json();
+              if (data.success) {
+                  if (data.action === 'liked') {
+                      btn.classList.add('liked');
+                      icon.classList.replace('bx-heart', 'bxs-heart');
+                  } else {
+                      btn.classList.remove('liked');
+                      icon.classList.replace('bxs-heart', 'bx-heart');
+                  }
+                  countSpan.textContent = data.total_likes > 0 ? data.total_likes : '';
+              }
+          } catch (err) {
+              console.error('Error toggling like:', err);
+          }
+      });
+  });
+
+  // Engagement: Bookmarks
+  document.querySelectorAll('.toggle-bookmark').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const postId = btn.getAttribute('data-id');
+          const icon = btn.querySelector('i');
+          
+          try {
+              const res = await fetch('/api/engagement/bookmark', {
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify({ post_id: postId })
+              });
+              const data = await res.json();
+              if (data.success) {
+                  if (data.action === 'bookmarked') {
+                      btn.classList.add('active');
+                      icon.classList.replace('bx-bookmark', 'bxs-bookmark');
+                  } else {
+                      btn.classList.remove('active');
+                      icon.classList.replace('bxs-bookmark', 'bx-bookmark');
+                  }
+              }
+          } catch (err) {
+              console.error('Error toggling bookmark:', err);
+          }
+      });
+  });
+
+  // Search Logic with Debounce
+  const searchInput = document.getElementById('globalSearchInput');
+  const searchResults = document.getElementById('searchResults');
+  
+  if (searchInput && searchResults) {
+      let timeout = null;
+      
+      searchInput.addEventListener('input', (e) => {
+          clearTimeout(timeout);
+          const query = e.target.value.trim();
+          
+          if (query.length < 2) {
+              searchResults.style.display = 'none';
+              return;
+          }
+
+          timeout = setTimeout(async () => {
+              try {
+                  const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+                  const data = await res.json();
+                  
+                  if (data.length === 0) {
+                      searchResults.innerHTML = '<div style="padding: 12px; color: var(--text-muted); text-align: center; font-size: 13px;">No results found</div>';
+                      searchResults.style.display = 'block';
+                      return;
+                  }
+
+                  let html = '';
+                  data.forEach(item => {
+                      const matchBadge = item.category_match ? '<span class="match-badge">Interest Match</span>' : '';
+                      html += `
+                          <a href="${item.url}" class="search-result-item">
+                              <div class="search-result-title">${item.title}</div>
+                              <div class="search-result-meta">${item.category} ${matchBadge}</div>
+                          </a>
+                      `;
+                  });
+                  searchResults.innerHTML = html;
+                  searchResults.style.display = 'block';
+                  
+              } catch (err) {
+                  console.error("Search error", err);
+              }
+          }, 300); // 300ms debounce
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+          if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+              searchResults.style.display = 'none';
+          }
+      });
+  }
 });
 
 // Register Service Worker for Offline Support
+// Disabled for local development because opening hotspot triggers offline mode in browser
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        console.log('%c SW registered ', 'background: #000; color: #fff', registration);
-      })
-      .catch(error => {
-        console.error('SW registration failed: ', error);
-      });
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      for(let registration of registrations) {
+        registration.unregister();
+        console.log('SW unregistered to prevent local dev offline issues');
+      }
+    });
   });
 }
 

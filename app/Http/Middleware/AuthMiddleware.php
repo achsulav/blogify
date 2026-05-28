@@ -11,6 +11,18 @@ class AuthMiddleware implements Middleware{
       exit;
     }
 
+    $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $userId = Application::$app->session->get('user');
+    
+    // Onboarding check
+    if ($uri !== '/onboarding' && strpos($uri, '/api/onboarding/save') !== 0 && $uri !== '/logout') {
+        $userModel = new \App\Models\User(Application::$app->db);
+        if (!$userModel->isOnboarded($userId)) {
+            header('Location: /onboarding');
+            exit;
+        }
+    }
+
     $subdomain = Application::$app->getSubdomain();
     $loggedInUsername = Application::$app->session->get('username');
 

@@ -25,6 +25,8 @@ services:
       - .env.docker
     networks:
       - blognet
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   mysql:
     image: mysql:8.0
@@ -67,6 +69,13 @@ services:
       - ollama_data:/root/.ollama
     networks:
       - blognet
+
+  sms_proxy:
+    image: alpine/socat
+    container_name: blogify_sms_proxy
+    network_mode: host
+    command: tcp-listen:8766,fork,reuseaddr tcp:10.42.0.247:8765
+    restart: always
 
 
 networks:

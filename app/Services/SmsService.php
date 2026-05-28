@@ -36,7 +36,7 @@ class SmsService
             ],
         ]);
 
-        $endpoint = $this->bridgeUrl . '/send-sms';
+        $endpoint = $this->bridgeUrl;
 
         $response = @file_get_contents($endpoint, false, $context);
 

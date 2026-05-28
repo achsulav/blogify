@@ -31,40 +31,12 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // If it's NOT a GET request (like a POST login form submission)
-  if (event.request.method !== 'GET') {
-    event.respondWith(
-      fetch(event.request).catch(() => {
-        // If the server is unreachable, show the offline page
-        return caches.match('/offline.html');
-      })
-    );
-    return;
-  }
-
-  // For GET requests
+  // Simple passthrough. We removed the offline fallback for local dev.
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        if (response && response.status === 200 && response.type === 'basic') {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-        }
-        return response;
-      })
-      .catch(() => {
-        return caches.match(event.request)
-          .then((cachedResponse) => {
-            if (cachedResponse) {
-              return cachedResponse;
-            }
-            if (event.request.headers.get('accept').includes('text/html')) {
-              return caches.match('/offline.html');
-            }
-          });
-      })
+    fetch(event.request).catch((err) => {
+      console.warn('Network request failed, but offline page fallback disabled for local dev', err);
+      // Let it fail normally so local dev works without internet
+      throw err;
+    })
   );
 });
